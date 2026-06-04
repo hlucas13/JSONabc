@@ -23,7 +23,7 @@ Sorts JSON object properties alphabetically and array values numerically. Design
 - **Local History** — every paste or edit is automatically saved to `localStorage` (up to 25 snapshots). Open the **History** modal from the dock to browse, restore, or delete any version
 - **Keyboard shortcut** — `Ctrl+Enter` / `Cmd+Enter` to sort
 - **Floating dock** — physics-based refraction using Snell's-law displacement maps; landscape shows more buttons (Copy, History, Clear), portrait collapses them into a **More** (⋯) hamburger panel
-- **Liquid toggle** — gooey, animated switches matching the FalaTina and Prisma.md design language
+- **Liquid toggle** — gooey, animated switches with SVG goo filter and GSAP transitions
 - **Glass toast** — pill-shaped notifications with backdrop blur and glass shine
 - **Help & Wiki** — in-app modal within the **Settings** menu, with usage guidance, keyboard shortcuts and feature reference. Each help section has a card with surface background
 - **Conventional commits** — Husky hooks enforce conventional commit messages (`commitlint`) and run Prettier + ESLint on every commit via `lint-staged`
@@ -92,13 +92,18 @@ fix: handle edge case in JSON parser
 docs: update README with new features
 ```
 
-## Design System
+## Liquid Glass
 
-JSONabc shares its **Liquid Glass** design language with [FalaTina](https://github.com/hlucas13/FalaTinaChart) and [Prisma.md](https://github.com/hlucas13/Prisma.md):
+The UI chrome (dock, menus, modals, and toggles) is built around a physics-based Liquid Glass system, implemented in `src/glass-distortion.ts`.
 
-- **Physics-based refraction** — SVG displacement maps computed from Snell's law simulate convex glass bezels on the dock and modal panels
+The implementation follows the refraction principles described in **[Liquid Glass — CSS & SVG](https://kube.io/blog/liquid-glass-css-svg/)** by Kube:
+
+- **Snell's law refraction** — each pixel of the glass surface displaces the background according to the angle of refraction derived from the surface normal, using an index of refraction of **1.45** (borosilicate glass).
+- **Convex height profile** — the surface height function `h(t) = √t` models a curved glass lens that is thicker at the centre and tapers toward the rim.
+- **SVG displacement maps** — a `<feImage>` + `<feDisplacementMap>` filter pipeline applies the computed per-pixel displacement at runtime, replacing the old turbulence-noise approach with deterministic, physics-consistent distortion.
 - **Multi-layer glass** — each glass element has four layers: `glass-effect` (backdrop blur + SVG distortion), `glass-tint` (surface colour), `glass-shine` (inset edge specular), and `glass-content` (interactive children)
-- **Liquid toggles** — gooey, GSAP-animated switches with knockout masks and SVG goo filters
+- **Progressive enhancement** — a `@supports (backdrop-filter: url(#x))` check unlocks the `backdrop-filter` compositing path on Chromium; all other browsers fall back to the base blur and tint layers.
+- **Convex specular hierarchy** — glass surfaces carry a three-layer inset `box-shadow` stack: primary top-left arc highlight → full perimeter rim → counter-specular depth shadow, matching the light model expected from a convex glass element.
 - **Design tokens** — all colours, spacing, and glass parameters are CSS custom properties, fully overridable per theme
 - **WCAG AA contrast** — text colours are carefully chosen to meet WCAG 2.1 AA standards in both light and dark modes
 
