@@ -2,8 +2,6 @@
 
 > A beautiful, zero-install JSON property sorter with a **Liquid Glass** aesthetic — alphabetical sorting (A–Z), trailing comma support, syntax highlighting, light/dark mode, frosted glass effects, and local history.
 
-![screenshot](screenshot.png)
-
 Sorts JSON object properties alphabetically and array values numerically. Designed as a progressive web app — no build step needed to run, just open `index.html` in any modern browser.
 
 **Live:** [https://hlucas13.github.io/JSONabc](https://hlucas13.github.io/JSONabc)
@@ -18,15 +16,16 @@ Sorts JSON object properties alphabetically and array values numerically. Design
 - **Trailing commas** — accepts JSON with trailing commas at any nesting level
 - **Syntax highlighting** — CodeMirror 5 with a custom JSON colour theme (light + dark)
 - **Format only** — pretty-prints JSON without reordering keys
+- **Actions menu** — the primary dock button opens a menu with **Sort** and **Format**; Sort is also accessible via `Ctrl+Enter` / `Cmd+Enter`
 - **Light / Dark mode** — persists preference in `localStorage`; follows system by default
 - **Clear / Frosted glass** — two glass styles togglable from the settings menu
 - **Copy to clipboard** — copies the sorted result with a single click
-- **Local History** — every paste or edit is automatically saved to `localStorage` (up to 25 snapshots). Reopen the **History** modal from the dock to browse, restore, or delete any version
+- **Local History** — every paste or edit is automatically saved to `localStorage` (up to 25 snapshots). Open the **History** modal from the dock to browse, restore, or delete any version
 - **Keyboard shortcut** — `Ctrl+Enter` / `Cmd+Enter` to sort
-- **Floating dock** — physics-based refraction using Snell's-law displacement maps
+- **Floating dock** — physics-based refraction using Snell's-law displacement maps; landscape shows more buttons (Copy, History, Clear), portrait collapses them into a **More** (⋯) hamburger panel
 - **Liquid toggle** — gooey, animated switches matching the FalaTina and Prisma.md design language
 - **Glass toast** — pill-shaped notifications with backdrop blur and glass shine
-- **Help & Wiki** — in-app modal within the Settings menu, with usage guidance, keyboard shortcuts and feature reference. Each help section has a card with surface background
+- **Help & Wiki** — in-app modal within the **Settings** menu, with usage guidance, keyboard shortcuts and feature reference. Each help section has a card with surface background
 - **Conventional commits** — Husky hooks enforce conventional commit messages (`commitlint`) and run Prettier + ESLint on every commit via `lint-staged`
 
 ## Project Architecture
@@ -44,9 +43,12 @@ JSONabc/
 ├── index.html                  ← HTML structure with Liquid Glass components
 ├── style.css                   ← Design tokens, glass system, CodeMirror theme, responsive, modals
 ├── build.js                    ← esbuild bundler (entry: src/main.ts → app.bundle.js)
-├── package.json                ← Dependencies (TypeScript, esbuild, ESLint, Husky)
-├── tsconfig.json               ← TypeScript configuration
+├── eslint.config.js            ← ESLint flat config for TypeScript
+├── .prettierrc                 ← Prettier formatting rules
 ├── commitlint.config.js        ← Conventional commits config
+├── package.json                ← Dependencies (TypeScript, esbuild, ESLint, Husky, Prettier)
+├── package-lock.json           ← Dependency lockfile
+├── tsconfig.json               ← TypeScript configuration
 ├── LICENSE                     ← MIT
 ├── .gitignore
 └── README.md
@@ -105,8 +107,8 @@ JSONabc shares its **Liquid Glass** design language with [FalaTina](https://gith
 The app saves up to 25 snapshots of the input editor content to `localStorage` under the key `jsonabc-history`. Snapshots are taken on every change with an 800 ms debounce. The **History** button in the dock opens a modal where you can:
 
 - Click any entry to restore its content to the input editor
-- Delete individual entries with the × button
-- Click **Clear all** to wipe the entire history
+- Delete individual entries with the × button (with confirmation)
+- Click **Clear all** to wipe the entire history (with confirmation)
 
 ## Deployment (GitHub Pages)
 

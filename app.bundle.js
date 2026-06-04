@@ -658,8 +658,8 @@
             iSort,
             "Sorting",
             `<ul class="help-list">
-        <li><strong>Sort</strong> \u2014 recursively sorts all object keys alphabetically (A\u2013Z) and array values numerically (0\u20131).</li>
-        <li><strong>Format</strong> \u2014 pretty-prints the JSON without reordering keys. Useful for quick formatting.</li>
+        <li><strong>Sort</strong> \u2014 recursively sorts all object keys alphabetically (A\u2013Z) and array values numerically (0\u20131). Available from the <strong>Actions</strong> menu or via <kbd>Ctrl+Enter</kbd> / <kbd>Cmd+Enter</kbd>.</li>
+        <li><strong>Format</strong> \u2014 pretty-prints the JSON without reordering keys. Useful for quick formatting. Also in the <strong>Actions</strong> menu.</li>
         <li><strong>Sort arrays</strong> \u2014 when enabled (via Settings), array element values are also sorted. Primitives (strings, numbers, booleans) are sorted naturally; objects inside arrays are sorted by their stringified representation.</li>
         <li><strong>Trailing commas</strong> \u2014 the parser strips trailing commas before processing, so JSON with a dangling comma at any level is accepted.</li>
       </ul>`
@@ -669,7 +669,7 @@
             "Copying & Clearing",
             `<ul class="help-list">
         <li><strong>Copy</strong> \u2014 copies the output panel content to your clipboard. Falls back to <code>document.execCommand('copy')</code> if the Clipboard API is unavailable.</li>
-        <li><strong>Clear</strong> \u2014 empties both the input and output editors.</li>
+        <li><strong>Clear</strong> \u2014 empties both editors (with confirmation dialog to prevent accidental data loss).</li>
       </ul>`
           ),
           section(
@@ -679,6 +679,7 @@
         <li><strong>Sort arrays</strong> \u2014 toggles sorting of array element values on or off.</li>
         <li><strong>Dark mode</strong> \u2014 toggles between light and dark colour schemes. Follows the system preference by default.</li>
         <li><strong>Frosted glass</strong> \u2014 switches the dock and panel glass effect between clear (subtle) and frosted (strong blur + milky tint).</li>
+        <li><strong>Help &amp; Wiki</strong> \u2014 accessed from the bottom of the Settings menu. Contains detailed guidance on all features.</li>
         <li><strong>Preferences saved</strong> \u2014 dark mode and glass style are persisted in <code>localStorage</code> and restored on your next visit.</li>
       </ul>`
           ),
@@ -687,8 +688,8 @@
             "Keyboard Shortcuts",
             `<ul class="help-list">
         <li><strong><kbd>Ctrl+Enter</kbd> / <kbd>Cmd+Enter</kbd></strong> \u2014 sort the current JSON.</li>
-        <li><strong><kbd>Escape</kbd></strong> \u2014 close open menus, history or help modal.</li>
-        <li>Click outside panels to close menus.</li>
+        <li><strong><kbd>Escape</kbd></strong> \u2014 close the Actions menu, Settings, hamburger panel, history modal or help modal.</li>
+        <li><strong>Click outside</strong> any menu or panel to close it.</li>
       </ul>`
           ),
           section(
@@ -697,7 +698,7 @@
             `<ul class="help-list">
         <li><strong>Auto-save</strong> \u2014 every time you paste or edit the input, a snapshot is saved locally.</li>
         <li><strong>Restore</strong> \u2014 click the <strong>History</strong> button in the dock to open the modal, then click any version to restore it to the input editor.</li>
-        <li><strong>Delete</strong> \u2014 each entry has a delete button to remove it individually. Use <strong>Clear all</strong> to wipe the entire history.</li>
+        <li><strong>Delete</strong> \u2014 each entry has a delete button to remove it individually (with confirmation). Use <strong>Clear all</strong> to wipe the entire history (also confirmed).</li>
         <li><strong>Persistent</strong> \u2014 history is stored in <code>localStorage</code> and survives page refreshes.</li>
       </ul>`
           )
