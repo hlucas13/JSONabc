@@ -33,23 +33,36 @@ Sorts JSON object properties alphabetically and array values numerically. Design
 ```
 JSONabc/
 ├── src/
-│   ├── main.ts                ← Application logic (sorting, UI, events, help modal, history)
-│   ├── history-store.ts        ← localStorage persistence for paste/edit snapshots
-│   ├── glass-distortion.ts     ← Snell's-law displacement map generator
-│   └── globals.d.ts            ← Type declarations (CodeMirror, GSAP)
+│   ├── main.ts                ← Application orchestrator (wires together all subsystems)
+│   ├── json-utils.ts          ← Pure JSON processing (parsing, sorting, comparison)
+│   ├── json-utils.test.ts     ← Unit tests for json-utils
+│   ├── history-store.ts       ← localStorage persistence for paste/edit snapshots
+│   ├── glass-distortion.ts    ← Snell's-law displacement map generator
+│   ├── globals.d.ts           ← Type declarations (CodeMirror, GSAP)
+│   └── ui/
+│       ├── editor.ts          ← CodeMirror editor factory
+│       ├── menu.ts            ← Menu management (settings, sort, hamburger)
+│       ├── modals.ts          ← Modal management (history, help)
+│       ├── theme.ts           ← Theme management (dark/light, frosted/clear glass)
+│       ├── toast.ts           ← Toast notification system
+│       └── liquid-toggle.ts   ← Liquid toggle animation helpers
+├── .github/workflows/
+│   └── ci.yml                 ← GitHub Actions CI (typecheck, lint, test, build)
 ├── .husky/
-│   ├── commit-msg              ← commitlint conventional commit enforcement
-│   └── pre-commit              ← lint-staged (Prettier + ESLint)
-├── index.html                  ← HTML structure with Liquid Glass components
-├── style.css                   ← Design tokens, glass system, CodeMirror theme, responsive, modals
-├── build.js                    ← esbuild bundler (entry: src/main.ts → app.bundle.js)
-├── eslint.config.js            ← ESLint flat config for TypeScript
-├── .prettierrc                 ← Prettier formatting rules
-├── commitlint.config.js        ← Conventional commits config
-├── package.json                ← Dependencies (TypeScript, esbuild, ESLint, Husky, Prettier)
-├── package-lock.json           ← Dependency lockfile
-├── tsconfig.json               ← TypeScript configuration
-├── LICENSE                     ← MIT
+│   ├── commit-msg             ← commitlint conventional commit enforcement
+│   └── pre-commit             ← lint-staged (Prettier + ESLint)
+├── index.html                 ← HTML structure with Liquid Glass components
+├── style.css                  ← Design tokens, glass system, CodeMirror theme, responsive, modals
+├── build.js                   ← esbuild bundler (entry: src/main.ts → app.bundle.js)
+├── vitest.config.ts           ← Vitest test configuration
+├── eslint.config.js           ← ESLint flat config for TypeScript
+├── .prettierrc                ← Prettier formatting rules
+├── .editorconfig              ← Editor consistency settings
+├── commitlint.config.js       ← Conventional commits config
+├── package.json               ← Dependencies (TypeScript, esbuild, ESLint, Husky, Prettier, Vitest)
+├── package-lock.json          ← Dependency lockfile
+├── tsconfig.json              ← TypeScript configuration
+├── LICENSE                    ← MIT
 ├── .gitignore
 └── README.md
 ```
@@ -71,11 +84,13 @@ The app also works directly from `file://` protocol, though CodeMirror's fold-gu
 
 ## Commands
 
-| Command             | Description                                      |
-| ------------------- | ------------------------------------------------ |
-| `npm run build`     | Bundle TypeScript with esbuild → `app.bundle.js` |
-| `npm run typecheck` | Type-check without emitting files                |
-| `npm run lint`      | Run ESLint on `src/`                             |
+| Command              | Description                                      |
+| -------------------- | ------------------------------------------------ |
+| `npm run build`      | Bundle TypeScript with esbuild → `app.bundle.js` |
+| `npm run test`       | Run unit tests with Vitest                       |
+| `npm run test:watch` | Run tests in watch mode                          |
+| `npm run typecheck`  | Type-check without emitting files                |
+| `npm run lint`       | Run ESLint on `src/`                             |
 
 ## Git Hooks
 
@@ -117,13 +132,21 @@ The app saves up to 25 snapshots of the input editor content to `localStorage` u
 
 ## Deployment (GitHub Pages)
 
-The repository is configured for GitHub Pages at `https://hlucas13.github.io/JSONabc`:
+Deploy is fully automated via **GitHub Actions**. On every push to `main`, the workflow:
 
-1. Push to the `main` branch
-2. In the repository Settings → Pages, set **Source** to **Deploy from a branch**, branch `main`, folder `/ (root)`
-3. The `index.html` at the root serves as the entry point
+1. Runs type-check, lint, and tests
+2. Builds `app.bundle.js` with esbuild
+3. Deploys to GitHub Pages automatically
 
-No build step is required for GitHub Pages — the pre-built `app.bundle.js` is committed to the repository. If you modify the TypeScript sources, run `npm run build` and commit the updated bundle.
+### First-time setup
+
+In the repository Settings → Pages, set **Source** to **GitHub Actions**.
+
+After that, every push to `main` triggers an automatic deploy.
+
+### Manual deploy
+
+You can also trigger a deploy manually from the **Actions** tab → **Deploy to GitHub Pages** → **Run workflow**.
 
 ## Technology
 

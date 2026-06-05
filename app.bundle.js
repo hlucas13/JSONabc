@@ -242,14 +242,421 @@
     }
   });
 
+  // src/json-utils.ts
+  function stripTrailingCommas(raw) {
+    return raw.replace(/,\s*([}\]])/g, "$1");
+  }
+  function parseJson(raw) {
+    const cleaned = stripTrailingCommas(raw);
+    return JSON.parse(cleaned);
+  }
+  function compareValues(a, b) {
+    if (a === null && b === null) return 0;
+    if (a === null) return -1;
+    if (b === null) return 1;
+    const ta = typeof a;
+    const tb = typeof b;
+    if (ta === "boolean" && tb === "boolean") {
+      if (a === b) return 0;
+      return a ? 1 : -1;
+    }
+    if (ta === "number" && tb === "number")
+      return a - b;
+    if (ta === "string" && tb === "string")
+      return a.localeCompare(b);
+    if (ta === "object" && tb === "object") {
+      const aIsArray = Array.isArray(a);
+      const bIsArray = Array.isArray(b);
+      if (aIsArray !== bIsArray) return aIsArray ? -1 : 1;
+      return JSON.stringify(a).localeCompare(JSON.stringify(b));
+    }
+    return ta.localeCompare(tb);
+  }
+  function sortValue(val, sortArrays) {
+    if (val === null || typeof val !== "object") return val;
+    if (Array.isArray(val)) {
+      const arr = val.map((v) => sortValue(v, sortArrays));
+      if (sortArrays) {
+        return [...arr].sort((a, b) => compareValues(a, b));
+      }
+      return arr;
+    }
+    const sorted = {};
+    const keys = Object.keys(val).sort(
+      (a, b) => a.localeCompare(b)
+    );
+    for (const k of keys) {
+      sorted[k] = sortValue(val[k], sortArrays);
+    }
+    return sorted;
+  }
+  function formatJson(value) {
+    return JSON.stringify(value, null, 2);
+  }
+  function processJson(raw, sortArrays) {
+    if (!raw.trim()) {
+      return { result: "", error: "Empty input" };
+    }
+    try {
+      const parsed = parseJson(raw);
+      const sorted = sortValue(parsed, sortArrays);
+      return { result: formatJson(sorted) };
+    } catch (err) {
+      return {
+        result: "",
+        error: err.message
+      };
+    }
+  }
+  function formatOnly(raw) {
+    if (!raw.trim()) {
+      return { result: "", error: "Empty input" };
+    }
+    try {
+      const parsed = parseJson(raw);
+      return { result: formatJson(parsed) };
+    } catch (err) {
+      return {
+        result: "",
+        error: err.message
+      };
+    }
+  }
+  function countLines(text) {
+    if (!text) return 0;
+    return text.split("\n").length;
+  }
+  var init_json_utils = __esm({
+    "src/json-utils.ts"() {
+      "use strict";
+    }
+  });
+
+  // src/ui/editor.ts
+  function createEditor(el, readOnly, placeholder) {
+    return CodeMirror(el, {
+      mode: { name: "javascript", json: true },
+      theme: "jsonabc",
+      readOnly: readOnly ? "nocursor" : false,
+      placeholder,
+      lineNumbers: true,
+      lineWrapping: true,
+      tabSize: 2,
+      indentUnit: 2,
+      indentWithTabs: false,
+      smartIndent: true,
+      matchBrackets: true,
+      autoCloseBrackets: false,
+      foldGutter: true,
+      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+      extraKeys: {
+        "Ctrl-S": () => {
+        },
+        "Cmd-S": () => {
+        }
+      }
+    });
+  }
+  var init_editor = __esm({
+    "src/ui/editor.ts"() {
+      "use strict";
+    }
+  });
+
+  // src/ui/liquid-toggle.ts
+  function syncLiquidToggle(el, state) {
+    el.setAttribute("aria-checked", String(state));
+    el.style.setProperty("--complete", state ? "100" : "0");
+  }
+  function animateLiquidToggle(el, toState) {
+    el.dataset.active = "true";
+    gsap.to(el, {
+      "--complete": toState ? 100 : 0,
+      duration: 0.14,
+      delay: 0.18,
+      ease: "power1.inOut",
+      onComplete: () => {
+        gsap.delayedCall(0.05, () => {
+          delete el.dataset.active;
+          el.setAttribute("aria-checked", String(toState));
+        });
+      }
+    });
+  }
+  var init_liquid_toggle = __esm({
+    "src/ui/liquid-toggle.ts"() {
+      "use strict";
+    }
+  });
+
+  // src/ui/menu.ts
+  function initMenus(settingsMenu, sortMenu, hamburgerPanel, btnHamburger) {
+    return { settingsMenu, sortMenu, hamburgerPanel, btnHamburger };
+  }
+  function closeAllMenus({
+    settingsMenu,
+    sortMenu,
+    hamburgerPanel,
+    btnHamburger
+  }) {
+    settingsMenu.classList.remove("visible");
+    settingsMenu.setAttribute("inert", "");
+    hamburgerPanel.classList.remove("visible");
+    hamburgerPanel.setAttribute("inert", "");
+    btnHamburger?.setAttribute("aria-expanded", "false");
+    sortMenu.classList.remove("visible");
+    sortMenu.setAttribute("inert", "");
+  }
+  function toggleSettingsMenu(elements, open) {
+    elements.settingsMenu.classList.toggle("visible", open);
+    if (open) {
+      elements.settingsMenu.removeAttribute("inert");
+    } else {
+      elements.settingsMenu.setAttribute("inert", "");
+    }
+  }
+  var init_menu = __esm({
+    "src/ui/menu.ts"() {
+      "use strict";
+    }
+  });
+
+  // src/ui/modals.ts
+  function initModals(historyModal, historyModalBackdrop, historyList, btnCloseHistory, btnClearHistory, helpModal, helpModalBackdrop, helpBody, btnCloseHelp, inputEditor, showToast2) {
+    return {
+      historyModal,
+      historyModalBackdrop,
+      historyList,
+      btnCloseHistory,
+      btnClearHistory,
+      helpModal,
+      helpModalBackdrop,
+      helpBody,
+      btnCloseHelp,
+      inputEditor,
+      showToast: showToast2
+    };
+  }
+  function renderHistoryList(elements) {
+    const history = getHistory();
+    elements.historyList.innerHTML = "";
+    if (!history.length) {
+      const empty = document.createElement("div");
+      empty.className = "history-empty";
+      empty.textContent = "No history yet. Paste some JSON and it will be saved here automatically.";
+      elements.historyList.appendChild(empty);
+      return;
+    }
+    for (const item of history) {
+      const el = document.createElement("div");
+      el.className = "history-item";
+      el.innerHTML = `<div class="history-item-content">
+        <span class="history-item-time">${formatHistoryDate(item.ts)}</span>
+        <span class="history-item-preview">${item.preview.replace(/</g, "&lt;")}</span>
+      </div>
+      <button class="history-item-delete" aria-label="Delete" type="button">&times;</button>`;
+      el.addEventListener("click", (e) => {
+        if (e.target.closest(".history-item-delete"))
+          return;
+        elements.inputEditor.setValue(item.content);
+        closeHistoryModal(elements);
+        elements.inputEditor.focus();
+        elements.showToast("Version restored from history.", "success");
+      });
+      const delBtn = el.querySelector(
+        ".history-item-delete"
+      );
+      delBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (!confirm("Delete this history entry?")) return;
+        deleteHistoryItem(item.id);
+        renderHistoryList(elements);
+        elements.showToast("Entry deleted.", "info");
+      });
+      elements.historyList.appendChild(el);
+    }
+  }
+  function openHistoryModal(elements) {
+    renderHistoryList(elements);
+    elements.historyModal.classList.add("visible");
+    elements.historyModal.removeAttribute("inert");
+    elements.btnCloseHistory.focus();
+  }
+  function closeHistoryModal(elements) {
+    elements.historyModal.classList.remove("visible");
+    elements.historyModal.setAttribute("inert", "");
+  }
+  function openHelpModal(elements) {
+    buildHelpBody(elements.helpBody);
+    elements.helpModal.classList.add("visible");
+    elements.helpModal.removeAttribute("inert");
+    elements.btnCloseHelp.focus();
+  }
+  function closeHelpModal(elements) {
+    elements.helpModal.classList.remove("visible");
+    elements.helpModal.setAttribute("inert", "");
+  }
+  function clearAllHistory(elements) {
+    const history = getHistory();
+    if (!history.length) {
+      elements.showToast("No history to clear.", "info");
+      return;
+    }
+    if (!confirm("Delete all history entries? This cannot be undone.")) return;
+    clearHistory();
+    renderHistoryList(elements);
+    elements.showToast("History cleared.", "info");
+  }
+  function buildHelpBody(helpBody) {
+    const section = (icon, title, body) => `<div class="help-section">
+      <div class="help-section-hd">
+        <span class="help-section-icon">${icon}</span>
+        <h3 class="help-section-title">${title}</h3>
+      </div>
+      <div class="help-section-body">${body}</div>
+    </div>`;
+    const iSort = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4M7 5v14"/><path d="M21 15l-4 4-4-4M17 19V5"/></svg>`;
+    const iCopy = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+    const iSettings = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>`;
+    const iKeyboard = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="10" y1="12" x2="10.01" y2="12"/><line x1="14" y1="12" x2="14.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="6" y1="16" x2="18" y2="16"/></svg>`;
+    const iHistory = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+    helpBody.innerHTML = [
+      section(
+        iSort,
+        "Sorting",
+        `<ul class="help-list">
+        <li><strong>Sort</strong> \u2014 recursively sorts all object keys alphabetically (A\u2013Z) and array values numerically (0\u20131). Available from the <strong>Actions</strong> menu or via <kbd>Ctrl+Enter</kbd> / <kbd>Cmd+Enter</kbd>.</li>
+        <li><strong>Format</strong> \u2014 pretty-prints the JSON without reordering keys. Useful for quick formatting. Also in the <strong>Actions</strong> menu.</li>
+        <li><strong>Sort arrays</strong> \u2014 when enabled (via Settings), array element values are also sorted. Primitives (strings, numbers, booleans) are sorted naturally; objects inside arrays are sorted by their stringified representation.</li>
+        <li><strong>Trailing commas</strong> \u2014 the parser strips trailing commas before processing, so JSON with a dangling comma at any level is accepted.</li>
+      </ul>`
+      ),
+      section(
+        iCopy,
+        "Copying & Clearing",
+        `<ul class="help-list">
+        <li><strong>Copy</strong> \u2014 copies the output panel content to your clipboard. Falls back to <code>document.execCommand('copy')</code> if the Clipboard API is unavailable.</li>
+        <li><strong>Clear</strong> \u2014 empties both editors (with confirmation dialog to prevent accidental data loss).</li>
+      </ul>`
+      ),
+      section(
+        iSettings,
+        "Settings",
+        `<ul class="help-list">
+        <li><strong>Sort arrays</strong> \u2014 toggles sorting of array element values on or off.</li>
+        <li><strong>Dark mode</strong> \u2014 toggles between light and dark colour schemes. Follows the system preference by default.</li>
+        <li><strong>Frosted glass</strong> \u2014 switches the dock and panel glass effect between clear (subtle) and frosted (strong blur + milky tint).</li>
+        <li><strong>Help &amp; Wiki</strong> \u2014 accessed from the bottom of the Settings menu. Contains detailed guidance on all features.</li>
+        <li><strong>Preferences saved</strong> \u2014 dark mode and glass style are persisted in <code>localStorage</code> and restored on your next visit.</li>
+      </ul>`
+      ),
+      section(
+        iKeyboard,
+        "Keyboard Shortcuts",
+        `<ul class="help-list">
+        <li><strong><kbd>Ctrl+Enter</kbd> / <kbd>Cmd+Enter</kbd></strong> \u2014 sort the current JSON.</li>
+        <li><strong><kbd>Escape</kbd></strong> \u2014 close the Actions menu, Settings, hamburger panel, history modal or help modal.</li>
+        <li><strong>Click outside</strong> any menu or panel to close it.</li>
+      </ul>`
+      ),
+      section(
+        iHistory,
+        "Local History",
+        `<ul class="help-list">
+        <li><strong>Auto-save</strong> \u2014 every time you paste or edit the input, a snapshot is saved locally.</li>
+        <li><strong>Restore</strong> \u2014 click the <strong>History</strong> button in the dock to open the modal, then click any version to restore it to the input editor.</li>
+        <li><strong>Delete</strong> \u2014 each entry has a delete button to remove it individually (with confirmation). Use <strong>Clear all</strong> to wipe the entire history (also confirmed).</li>
+        <li><strong>Persistent</strong> \u2014 history is stored in <code>localStorage</code> and survives page refreshes.</li>
+      </ul>`
+      )
+    ].join("");
+  }
+  var init_modals = __esm({
+    "src/ui/modals.ts"() {
+      "use strict";
+      init_history_store();
+    }
+  });
+
+  // src/ui/theme.ts
+  function initTheme(iconThemeSettings, toggleTheme, toggleGlass, inputEditor, outputEditor) {
+    return { iconThemeSettings, toggleTheme, toggleGlass, inputEditor, outputEditor };
+  }
+  function applyTheme(elements, dark, animate = false, persist = true) {
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    elements.iconThemeSettings.innerHTML = dark ? SVG_SUN : SVG_MOON;
+    if (animate) {
+      animateLiquidToggle(elements.toggleTheme, dark);
+    } else {
+      syncLiquidToggle(elements.toggleTheme, dark);
+    }
+    if (persist) {
+      localStorage.setItem("jsonabc-theme", dark ? "dark" : "light");
+    }
+    elements.inputEditor.setOption("theme", "jsonabc");
+    elements.outputEditor.setOption("theme", "jsonabc");
+  }
+  function applyGlassStyle(elements, frosted, animate = false, persist = true) {
+    document.documentElement.dataset.glass = frosted ? "frosted" : "clear";
+    if (animate) {
+      animateLiquidToggle(elements.toggleGlass, frosted);
+    } else {
+      syncLiquidToggle(elements.toggleGlass, frosted);
+    }
+    if (persist) {
+      localStorage.setItem("jsonabc-glass", frosted ? "frosted" : "clear");
+    }
+  }
+  function detectSystemTheme() {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  var SVG_MOON_ATTRS, SVG_MOON, SVG_SUN;
+  var init_theme = __esm({
+    "src/ui/theme.ts"() {
+      "use strict";
+      init_liquid_toggle();
+      SVG_MOON_ATTRS = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+      SVG_MOON = `<svg ${SVG_MOON_ATTRS}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+      SVG_SUN = `<svg ${SVG_MOON_ATTRS}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+    }
+  });
+
+  // src/ui/toast.ts
+  function initToast(toast, toastMsg) {
+    return { toast, toastMsg };
+  }
+  function showToast(elements, msg, type) {
+    elements.toastMsg.textContent = msg;
+    elements.toast.className = "toast";
+    elements.toast.classList.add(type);
+    elements.toast.classList.remove("hidden");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(
+      () => elements.toast.classList.add("hidden"),
+      3e3
+    );
+  }
+  var toastTimer;
+  var init_toast = __esm({
+    "src/ui/toast.ts"() {
+      "use strict";
+      toastTimer = null;
+    }
+  });
+
   // src/main.ts
   var require_main = __commonJS({
     "src/main.ts"() {
       var import_glass_distortion = __toESM(require_glass_distortion());
       init_history_store();
-      var SVG_SVG_ATTRS = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
-      var SVG_MOON = `<svg ${SVG_SVG_ATTRS}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
-      var SVG_SUN = `<svg ${SVG_SVG_ATTRS}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+      init_json_utils();
+      init_editor();
+      init_liquid_toggle();
+      init_menu();
+      init_modals();
+      init_theme();
+      init_toast();
       var iconThemeSettings = document.getElementById("icon-theme-settings");
       var btnSort = document.getElementById("btn-sort");
       var btnCopy = document.getElementById("btn-copy");
@@ -274,35 +681,41 @@
       var sortArraysToggle = document.getElementById(
         "sort-arrays-toggle"
       );
-      function createEditor(el, readOnly, placeholder) {
-        return CodeMirror(el, {
-          mode: { name: "javascript", json: true },
-          theme: "jsonabc",
-          readOnly: readOnly ? "nocursor" : false,
-          placeholder,
-          lineNumbers: true,
-          lineWrapping: true,
-          tabSize: 2,
-          indentUnit: 2,
-          indentWithTabs: false,
-          smartIndent: true,
-          matchBrackets: true,
-          autoCloseBrackets: false,
-          foldGutter: true,
-          gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-          extraKeys: {
-            "Ctrl-S": () => {
-            },
-            "Cmd-S": () => {
-            }
-          }
-        });
-      }
+      var toastEls = initToast(toast, toastMsg);
+      var show = (msg, type) => showToast(toastEls, msg, type);
       var inputEditor = createEditor(
         document.getElementById("input-wrap"),
         false,
         "Paste your JSON here\u2026"
       );
+      var outputEditor = createEditor(
+        document.getElementById("output-wrap"),
+        true,
+        "Sorted result will appear here\u2026"
+      );
+      var menuEls = initMenus(settingsMenu, sortMenu, hamburgerPanel, btnHamburger);
+      var modalEls = initModals(
+        document.getElementById("history-modal"),
+        document.getElementById("history-modal-backdrop"),
+        document.getElementById("history-list"),
+        document.getElementById("btn-close-history"),
+        document.getElementById("btn-clear-history"),
+        document.getElementById("help-modal"),
+        document.getElementById("help-modal-backdrop"),
+        document.getElementById("help-body"),
+        document.getElementById("btn-close-help"),
+        inputEditor,
+        show
+      );
+      var themeEls = initTheme(
+        iconThemeSettings,
+        toggleTheme,
+        toggleGlass,
+        inputEditor,
+        outputEditor
+      );
+      var isDark = false;
+      var sortArraysEnabled = false;
       var inputChangeTimer = null;
       inputEditor.on("change", () => {
         if (inputChangeTimer) clearTimeout(inputChangeTimer);
@@ -310,96 +723,52 @@
           saveSnapshot(inputEditor.getValue());
         }, 800);
       });
-      var outputEditor = createEditor(
-        document.getElementById("output-wrap"),
-        true,
-        "Sorted result will appear here\u2026"
-      );
-      function stripTrailingCommas(raw) {
-        return raw.replace(/,\s*([}\]])/g, "$1");
-      }
-      function parseJson(raw) {
-        const cleaned = stripTrailingCommas(raw);
-        return JSON.parse(cleaned);
-      }
-      function compareValues(a, b) {
-        if (a === null && b === null) return 0;
-        if (a === null) return -1;
-        if (b === null) return 1;
-        const ta = typeof a;
-        const tb = typeof b;
-        if (ta === "boolean" && tb === "boolean") return a ? 1 : -1;
-        if (ta === "number" && tb === "number") return a - b;
-        if (ta === "string" && tb === "string")
-          return a.localeCompare(b);
-        if (ta === "object" && tb === "object")
-          return JSON.stringify(a).localeCompare(JSON.stringify(b));
-        return ta.localeCompare(tb);
-      }
-      function sortValue(val, sortArrays) {
-        if (val === null || typeof val !== "object") return val;
-        if (Array.isArray(val)) {
-          let arr = val.map((v) => sortValue(v, sortArrays));
-          if (sortArrays) arr = arr.sort((a, b) => compareValues(a, b));
-          return arr;
-        }
-        const sorted = {};
-        for (const k of Object.keys(val).sort(
-          (a, b) => a.localeCompare(b)
-        )) {
-          sorted[k] = sortValue(val[k], sortArrays);
-        }
-        return sorted;
-      }
-      function processJSON(sortArrays) {
+      function handleProcessJSON() {
         const raw = inputEditor.getValue();
-        if (!raw.trim()) {
-          showToast("Paste some JSON to get started.", "info");
+        const { result, error } = processJson(raw, sortArraysEnabled);
+        if (error === "Empty input") {
+          show("Paste some JSON to get started.", "info");
           outputEditor.setValue("");
-          updateLineCount("");
+          lineCountEl.textContent = "";
           return;
         }
-        try {
-          const parsed = parseJson(raw);
-          const sorted = sortValue(parsed, sortArrays);
-          const pretty = JSON.stringify(sorted, null, 2);
-          outputEditor.setValue(pretty);
-          updateLineCount(pretty);
-          showToast("\u2714 JSON sorted successfully!", "success");
-        } catch (err) {
-          showToast("\u2716 Error: " + err.message, "error");
+        if (error) {
+          show("\u2716 Error: " + error, "error");
           outputEditor.setValue("");
-          updateLineCount("");
-        }
-      }
-      function formatOnly() {
-        const raw = inputEditor.getValue();
-        if (!raw.trim()) {
-          showToast("Paste some JSON to format.", "info");
-          outputEditor.setValue("");
-          updateLineCount("");
+          lineCountEl.textContent = "";
           return;
         }
-        try {
-          const parsed = parseJson(raw);
-          const pretty = JSON.stringify(parsed, null, 2);
-          outputEditor.setValue(pretty);
-          updateLineCount(pretty);
-          showToast("\u2714 JSON formatted!", "success");
-        } catch (err) {
-          showToast("\u2716 Error: " + err.message, "error");
+        outputEditor.setValue(result);
+        lineCountEl.textContent = `${countLines(result)} lines`;
+        show("\u2714 JSON sorted successfully!", "success");
+      }
+      function handleFormatOnly() {
+        const raw = inputEditor.getValue();
+        const { result, error } = formatOnly(raw);
+        if (error === "Empty input") {
+          show("Paste some JSON to format.", "info");
           outputEditor.setValue("");
-          updateLineCount("");
+          lineCountEl.textContent = "";
+          return;
         }
+        if (error) {
+          show("\u2716 Error: " + error, "error");
+          outputEditor.setValue("");
+          lineCountEl.textContent = "";
+          return;
+        }
+        outputEditor.setValue(result);
+        lineCountEl.textContent = `${countLines(result)} lines`;
+        show("\u2714 JSON formatted!", "success");
       }
       function copyResult() {
         const val = outputEditor.getValue();
         if (!val) {
-          showToast("Nothing to copy.", "info");
+          show("Nothing to copy.", "info");
           return;
         }
         navigator.clipboard.writeText(val).then(
-          () => showToast("\u{1F4CB} Copied!", "success"),
+          () => show("\u{1F4CB} Copied!", "success"),
           () => {
             const ta = document.createElement("textarea");
             ta.value = val;
@@ -409,124 +778,67 @@
             ta.select();
             document.execCommand("copy");
             document.body.removeChild(ta);
-            showToast("\u{1F4CB} Copied!", "success");
+            show("\u{1F4CB} Copied!", "success");
           }
         );
       }
       function clearAll() {
         if (!inputEditor.getValue().trim() && !outputEditor.getValue().trim()) {
-          showToast("Nothing to clear.", "info");
+          show("Nothing to clear.", "info");
           return;
         }
         if (!confirm("Clear both editors? This cannot be undone.")) return;
         inputEditor.setValue("");
         outputEditor.setValue("");
-        updateLineCount("");
-        showToast("Cleared.", "info");
+        lineCountEl.textContent = "";
+        show("Cleared.", "info");
       }
-      function updateLineCount(text) {
-        lineCountEl.textContent = text ? `${text.split("\n").length} linhas` : "";
-      }
-      var toastTimer = null;
-      function showToast(msg, type) {
-        toastMsg.textContent = msg;
-        toast.className = "toast";
-        toast.classList.add(type);
-        toast.classList.remove("hidden");
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.add("hidden"), 3e3);
-      }
-      function syncLiquidToggle(el, state) {
-        el.setAttribute("aria-checked", String(state));
-        el.style.setProperty("--complete", state ? "100" : "0");
-      }
-      function animateLiquidToggle(el, toState) {
-        el.dataset.active = "true";
-        gsap.to(el, {
-          "--complete": toState ? 100 : 0,
-          duration: 0.14,
-          delay: 0.18,
-          ease: "power1.inOut",
-          onComplete: () => {
-            gsap.delayedCall(0.05, () => {
-              delete el.dataset.active;
-              el.setAttribute("aria-checked", String(toState));
-            });
-          }
-        });
-      }
-      var isDark = false;
-      function applyTheme(dark, animate = false, persist = true) {
-        isDark = dark;
-        document.documentElement.dataset.theme = dark ? "dark" : "light";
-        iconThemeSettings.innerHTML = dark ? SVG_SUN : SVG_MOON;
-        if (animate) animateLiquidToggle(toggleTheme, dark);
-        else syncLiquidToggle(toggleTheme, dark);
-        if (persist) localStorage.setItem("jsonabc-theme", dark ? "dark" : "light");
-        inputEditor.setOption("theme", "jsonabc");
-        outputEditor.setOption("theme", "jsonabc");
-      }
-      toggleTheme.addEventListener("click", () => applyTheme(!isDark, true));
-      function applyGlassStyle(frosted, animate = false, persist = true) {
-        document.documentElement.dataset.glass = frosted ? "frosted" : "clear";
-        if (animate) animateLiquidToggle(toggleGlass, frosted);
-        else syncLiquidToggle(toggleGlass, frosted);
-        if (persist)
-          localStorage.setItem("jsonabc-glass", frosted ? "frosted" : "clear");
-      }
-      toggleGlass.addEventListener("click", () => {
-        applyGlassStyle(document.documentElement.dataset.glass !== "frosted", true);
+      toggleTheme.addEventListener("click", () => {
+        isDark = !isDark;
+        applyTheme(themeEls, isDark, true);
       });
-      var sortArraysEnabled = false;
+      toggleGlass.addEventListener("click", () => {
+        applyGlassStyle(
+          themeEls,
+          document.documentElement.dataset.glass !== "frosted",
+          true
+        );
+      });
       sortArraysToggle.addEventListener("click", () => {
         sortArraysEnabled = !sortArraysEnabled;
         animateLiquidToggle(sortArraysToggle, sortArraysEnabled);
         iconSortArrays.innerHTML = sortArraysEnabled ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4M7 5v14"/><path d="M21 15l-4 4-4-4M17 19V5"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4M7 5v14"/><path d="M21 15l-4 4-4-4M17 19V5" opacity="0.3"/></svg>';
       });
-      function closeAllMenus() {
-        settingsMenu.classList.remove("visible");
-        settingsMenu.setAttribute("inert", "");
-        hamburgerPanel.classList.remove("visible");
-        hamburgerPanel.setAttribute("inert", "");
-        if (btnHamburger) btnHamburger.setAttribute("aria-expanded", "false");
-        sortMenu.classList.remove("visible");
-        sortMenu.setAttribute("inert", "");
-      }
-      function toggleSettingsMenu(open) {
-        settingsMenu.classList.toggle("visible", open);
-        if (open) settingsMenu.removeAttribute("inert");
-        else settingsMenu.setAttribute("inert", "");
-      }
       btnSettings.addEventListener("click", (e) => {
         e.stopPropagation();
-        toggleSettingsMenu(!settingsMenu.classList.contains("visible"));
+        toggleSettingsMenu(menuEls, !settingsMenu.classList.contains("visible"));
       });
       btnSort.addEventListener("click", (e) => {
         e.stopPropagation();
-        closeAllMenus();
+        closeAllMenus(menuEls);
         sortMenu.classList.toggle("visible");
         sortMenu.toggleAttribute("inert");
       });
       document.getElementById("sort-menu-sort").addEventListener("click", () => {
-        closeAllMenus();
-        processJSON(sortArraysEnabled);
+        closeAllMenus(menuEls);
+        handleProcessJSON();
       });
       document.getElementById("sort-menu-format").addEventListener("click", () => {
-        closeAllMenus();
-        formatOnly();
+        closeAllMenus(menuEls);
+        handleFormatOnly();
       });
       btnHamburger.addEventListener("click", (e) => {
         e.stopPropagation();
-        const open = !hamburgerPanel.classList.contains("visible");
-        if (open) {
-          closeAllMenus();
+        const isOpen = !hamburgerPanel.classList.contains("visible");
+        if (isOpen) {
+          closeAllMenus(menuEls);
           hamburgerPanel.classList.add("visible");
           hamburgerPanel.removeAttribute("inert");
         } else {
           hamburgerPanel.classList.remove("visible");
           hamburgerPanel.setAttribute("inert", "");
         }
-        btnHamburger.setAttribute("aria-expanded", String(open));
+        btnHamburger.setAttribute("aria-expanded", String(isOpen));
       });
       hamburgerPanel.querySelectorAll("[data-delegates]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -548,7 +860,7 @@
         if (!clickedHamburger && !clickedHamburgerPanel) {
           hamburgerPanel.classList.remove("visible");
           hamburgerPanel.setAttribute("inert", "");
-          if (btnHamburger) btnHamburger.setAttribute("aria-expanded", "false");
+          btnHamburger.setAttribute("aria-expanded", "false");
         }
         if (!clickedSortBtn && !clickedSortMenu) {
           sortMenu.classList.remove("visible");
@@ -557,17 +869,17 @@
       });
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
-          if (historyModal && historyModal.classList.contains("visible")) {
-            closeHistoryModal();
-          } else if (helpModal && helpModal.classList.contains("visible")) {
-            closeHelpModal();
-          } else if (sortMenu && sortMenu.classList.contains("visible")) {
+          if (modalEls.historyModal.classList.contains("visible")) {
+            closeHistoryModal(modalEls);
+          } else if (modalEls.helpModal.classList.contains("visible")) {
+            closeHelpModal(modalEls);
+          } else if (sortMenu.classList.contains("visible")) {
             sortMenu.classList.remove("visible");
             sortMenu.setAttribute("inert", "");
-          } else if (hamburgerPanel && hamburgerPanel.classList.contains("visible")) {
+          } else if (hamburgerPanel.classList.contains("visible")) {
             hamburgerPanel.classList.remove("visible");
             hamburgerPanel.setAttribute("inert", "");
-            if (btnHamburger) btnHamburger.setAttribute("aria-expanded", "false");
+            btnHamburger.setAttribute("aria-expanded", "false");
           } else {
             settingsMenu.classList.remove("visible");
             settingsMenu.setAttribute("inert", "");
@@ -577,181 +889,49 @@
       document.addEventListener("keydown", (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
           e.preventDefault();
-          processJSON(sortArraysEnabled);
+          handleProcessJSON();
         }
       });
       btnCopy.addEventListener("click", copyResult);
       btnClear.addEventListener("click", clearAll);
-      var historyModal = document.getElementById("history-modal");
-      var historyModalBackdrop = document.getElementById("history-modal-backdrop");
-      var btnCloseHistory = document.getElementById("btn-close-history");
-      var historyList = document.getElementById("history-list");
-      var btnClearHistory = document.getElementById("btn-clear-history");
       var btnHistory = document.getElementById("btn-history");
-      function renderHistoryList() {
-        const history = getHistory();
-        historyList.innerHTML = "";
-        if (!history.length) {
-          const empty = document.createElement("div");
-          empty.className = "history-empty";
-          empty.textContent = "No history yet. Paste some JSON and it will be saved here automatically.";
-          historyList.appendChild(empty);
-          return;
-        }
-        for (const item of history) {
-          const el = document.createElement("div");
-          el.className = "history-item";
-          el.innerHTML = `<div class="history-item-content">
-        <span class="history-item-time">${formatHistoryDate(item.ts)}</span>
-        <span class="history-item-preview">${item.preview.replace(/</g, "&lt;")}</span>
-      </div>
-      <button class="history-item-delete" aria-label="Delete" type="button">&times;</button>`;
-          el.addEventListener("click", (e) => {
-            if (e.target.closest(".history-item-delete")) return;
-            inputEditor.setValue(item.content);
-            closeHistoryModal();
-            inputEditor.focus();
-            showToast("Version restored from history.", "success");
-          });
-          const delBtn = el.querySelector(".history-item-delete");
-          delBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            if (!confirm("Delete this history entry?")) return;
-            deleteHistoryItem(item.id);
-            renderHistoryList();
-            showToast("Entry deleted.", "info");
-          });
-          historyList.appendChild(el);
-        }
-      }
-      function openHistoryModal() {
-        renderHistoryList();
-        historyModal.classList.add("visible");
-        historyModal.removeAttribute("inert");
-        btnCloseHistory.focus();
-      }
-      function closeHistoryModal() {
-        historyModal.classList.remove("visible");
-        historyModal.setAttribute("inert", "");
-      }
-      var helpModal = document.getElementById("help-modal");
-      var helpModalBackdrop = document.getElementById("help-modal-backdrop");
-      var btnCloseHelp = document.getElementById("btn-close-help");
-      var helpBody = document.getElementById("help-body");
-      var btnHelp = document.getElementById("btn-help");
-      function buildHelpBody() {
-        const section = (icon, title, body) => `<div class="help-section">
-      <div class="help-section-hd">
-        <span class="help-section-icon">${icon}</span>
-        <h3 class="help-section-title">${title}</h3>
-      </div>
-      <div class="help-section-body">${body}</div>
-    </div>`;
-        const iSort = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4M7 5v14"/><path d="M21 15l-4 4-4-4M17 19V5"/></svg>`;
-        const iCopy = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-        const iSettings = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>`;
-        const iKeyboard = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="10" y1="12" x2="10.01" y2="12"/><line x1="14" y1="12" x2="14.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/><line x1="6" y1="16" x2="18" y2="16"/></svg>`;
-        const iHistory = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
-        helpBody.innerHTML = [
-          section(
-            iSort,
-            "Sorting",
-            `<ul class="help-list">
-        <li><strong>Sort</strong> \u2014 recursively sorts all object keys alphabetically (A\u2013Z) and array values numerically (0\u20131). Available from the <strong>Actions</strong> menu or via <kbd>Ctrl+Enter</kbd> / <kbd>Cmd+Enter</kbd>.</li>
-        <li><strong>Format</strong> \u2014 pretty-prints the JSON without reordering keys. Useful for quick formatting. Also in the <strong>Actions</strong> menu.</li>
-        <li><strong>Sort arrays</strong> \u2014 when enabled (via Settings), array element values are also sorted. Primitives (strings, numbers, booleans) are sorted naturally; objects inside arrays are sorted by their stringified representation.</li>
-        <li><strong>Trailing commas</strong> \u2014 the parser strips trailing commas before processing, so JSON with a dangling comma at any level is accepted.</li>
-      </ul>`
-          ),
-          section(
-            iCopy,
-            "Copying & Clearing",
-            `<ul class="help-list">
-        <li><strong>Copy</strong> \u2014 copies the output panel content to your clipboard. Falls back to <code>document.execCommand('copy')</code> if the Clipboard API is unavailable.</li>
-        <li><strong>Clear</strong> \u2014 empties both editors (with confirmation dialog to prevent accidental data loss).</li>
-      </ul>`
-          ),
-          section(
-            iSettings,
-            "Settings",
-            `<ul class="help-list">
-        <li><strong>Sort arrays</strong> \u2014 toggles sorting of array element values on or off.</li>
-        <li><strong>Dark mode</strong> \u2014 toggles between light and dark colour schemes. Follows the system preference by default.</li>
-        <li><strong>Frosted glass</strong> \u2014 switches the dock and panel glass effect between clear (subtle) and frosted (strong blur + milky tint).</li>
-        <li><strong>Help &amp; Wiki</strong> \u2014 accessed from the bottom of the Settings menu. Contains detailed guidance on all features.</li>
-        <li><strong>Preferences saved</strong> \u2014 dark mode and glass style are persisted in <code>localStorage</code> and restored on your next visit.</li>
-      </ul>`
-          ),
-          section(
-            iKeyboard,
-            "Keyboard Shortcuts",
-            `<ul class="help-list">
-        <li><strong><kbd>Ctrl+Enter</kbd> / <kbd>Cmd+Enter</kbd></strong> \u2014 sort the current JSON.</li>
-        <li><strong><kbd>Escape</kbd></strong> \u2014 close the Actions menu, Settings, hamburger panel, history modal or help modal.</li>
-        <li><strong>Click outside</strong> any menu or panel to close it.</li>
-      </ul>`
-          ),
-          section(
-            iHistory,
-            "Local History",
-            `<ul class="help-list">
-        <li><strong>Auto-save</strong> \u2014 every time you paste or edit the input, a snapshot is saved locally.</li>
-        <li><strong>Restore</strong> \u2014 click the <strong>History</strong> button in the dock to open the modal, then click any version to restore it to the input editor.</li>
-        <li><strong>Delete</strong> \u2014 each entry has a delete button to remove it individually (with confirmation). Use <strong>Clear all</strong> to wipe the entire history (also confirmed).</li>
-        <li><strong>Persistent</strong> \u2014 history is stored in <code>localStorage</code> and survives page refreshes.</li>
-      </ul>`
-          )
-        ].join("");
-      }
-      function openHelpModal() {
-        buildHelpBody();
-        helpModal.classList.add("visible");
-        helpModal.removeAttribute("inert");
-        btnCloseHelp.focus();
-      }
-      function closeHelpModal() {
-        helpModal.classList.remove("visible");
-        helpModal.setAttribute("inert", "");
-      }
-      btnHelp.addEventListener("click", () => {
-        closeAllMenus();
-        openHelpModal();
-      });
       btnHistory.addEventListener("click", (e) => {
         e.stopPropagation();
-        closeAllMenus();
-        openHistoryModal();
+        closeAllMenus(menuEls);
+        openHistoryModal(modalEls);
       });
-      historyModalBackdrop.addEventListener("click", closeHistoryModal);
-      btnCloseHistory.addEventListener("click", closeHistoryModal);
-      btnClearHistory.addEventListener("click", () => {
-        const history = getHistory();
-        if (!history.length) {
-          showToast("No history to clear.", "info");
-          return;
-        }
-        if (!confirm("Delete all history entries? This cannot be undone.")) return;
-        clearHistory();
-        renderHistoryList();
-        showToast("History cleared.", "info");
+      modalEls.historyModalBackdrop.addEventListener(
+        "click",
+        () => closeHistoryModal(modalEls)
+      );
+      modalEls.btnCloseHistory.addEventListener(
+        "click",
+        () => closeHistoryModal(modalEls)
+      );
+      modalEls.btnClearHistory.addEventListener(
+        "click",
+        () => clearAllHistory(modalEls)
+      );
+      var btnHelp = document.getElementById("btn-help");
+      btnHelp.addEventListener("click", () => {
+        closeAllMenus(menuEls);
+        openHelpModal(modalEls);
       });
-      helpModalBackdrop.addEventListener("click", closeHelpModal);
-      btnCloseHelp.addEventListener("click", closeHelpModal);
+      modalEls.helpModalBackdrop.addEventListener(
+        "click",
+        () => closeHelpModal(modalEls)
+      );
+      modalEls.btnCloseHelp.addEventListener("click", () => closeHelpModal(modalEls));
       function restorePrefs() {
         const savedTheme = localStorage.getItem("jsonabc-theme");
-        if (savedTheme) {
-          isDark = savedTheme === "dark";
-        } else {
-          isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        }
-        applyTheme(isDark, false, false);
+        isDark = savedTheme ? savedTheme === "dark" : detectSystemTheme();
+        applyTheme(themeEls, isDark, false, false);
         const savedGlass = localStorage.getItem("jsonabc-glass");
-        applyGlassStyle(savedGlass === "frosted", false, false);
+        applyGlassStyle(themeEls, savedGlass === "frosted", false, false);
         syncLiquidToggle(sortArraysToggle, false);
       }
       restorePrefs();
-      showToast("Ready. Paste your JSON and click Sort.", "info");
+      show("Ready. Paste your JSON and click Sort.", "info");
       setTimeout(() => {
         inputEditor.refresh();
         outputEditor.refresh();

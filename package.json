@@ -1,35 +1,46 @@
 {
-  "name": "jsonabc",
-  "version": "1.0.0",
-  "description": "Ordenador de propriedades JSON com estética Liquid Glass — sorting properties A–Z, trailing commas, syntax highlight.",
-  "main": "app.bundle.js",
-  "scripts": {
-    "build": "node build.js",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint src/",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "eslint --fix",
-      "prettier --write"
+    "name": "jsonabc",
+    "version": "1.0.0",
+    "description": "Ordenador de propriedades JSON com estética Liquid Glass — sorting properties A–Z, trailing commas, syntax highlight.",
+    "main": "app.bundle.js",
+    "scripts": {
+        "dev": "vite",
+        "preview": "vite preview",
+        "build": "node build.js",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint src/",
+        "prepare": "husky"
+    },
+    "lint-staged": {
+        "src/**/*.ts": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{html,css,json,md}": "prettier --write"
+    },
+    "keywords": [
+        "json",
+        "sort",
+        "liquid-glass",
+        "github-pages"
     ],
-    "*.{html,css,json,md}": "prettier --write"
-  },
-  "keywords": ["json", "sort", "liquid-glass", "github-pages"],
-  "author": "Homero Lucas do Prado",
-  "license": "MIT",
-  "type": "commonjs",
-  "devDependencies": {
-    "@commitlint/cli": "^20.5.0",
-    "@commitlint/config-conventional": "^20.5.0",
-    "@typescript-eslint/eslint-plugin": "^8.57.2",
-    "@typescript-eslint/parser": "^8.57.2",
-    "esbuild": "^0.27.4",
-    "eslint": "^10.1.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "prettier": "^3.8.1",
-    "typescript": "^5.9.3"
-  }
+    "author": "Homero Lucas do Prado",
+    "license": "MIT",
+    "type": "commonjs",
+    "devDependencies": {
+        "@commitlint/cli": "^20.5.0",
+        "@commitlint/config-conventional": "^20.5.0",
+        "@typescript-eslint/eslint-plugin": "^8.57.2",
+        "@typescript-eslint/parser": "^8.57.2",
+        "esbuild": "^0.27.4",
+        "eslint": "^10.1.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.4.0",
+        "prettier": "^3.8.1",
+        "typescript": "^5.9.3",
+        "vite": "^8.0.16",
+        "vitest": "^4.1.8"
+    }
 }
