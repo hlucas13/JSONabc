@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
-    compareValues,
-    countLines,
-    formatJson,
-    formatOnly,
-    parseJson,
-    processJson,
-    sortValue,
-    stripTrailingCommas,
+  compareValues,
+  countLines,
+  formatJson,
+  formatOnly,
+  parseJson,
+  processJson,
+  sortValue,
+  stripTrailingCommas,
 } from './json-utils';
 
 describe('stripTrailingCommas', () => {
@@ -92,10 +92,7 @@ describe('sortValue', () => {
     const input = { z: { b: 2, a: 1 }, a: 3 };
     const result = sortValue(input, false) as Record<string, unknown>;
     expect(Object.keys(result)).toEqual(['a', 'z']);
-    expect(Object.keys(result['z'] as Record<string, unknown>)).toEqual([
-      'a',
-      'b',
-    ]);
+    expect(Object.keys(result['z'] as Record<string, unknown>)).toEqual(['a', 'b']);
   });
 
   it('preserves array order when sortArrays is false', () => {

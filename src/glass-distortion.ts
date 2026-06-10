@@ -28,9 +28,7 @@ const GlassDistortion = {
     const qx = Math.abs(px - cx) - (hw - r);
     const qy = Math.abs(py - cy) - (hh - r);
     const outer =
-      Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) +
-      Math.min(Math.max(qx, qy), 0) -
-      r;
+      Math.sqrt(Math.max(qx, 0) ** 2 + Math.max(qy, 0) ** 2) + Math.min(Math.max(qx, qy), 0) - r;
     return -outer;
   },
 
@@ -58,10 +56,7 @@ const GlassDistortion = {
     const R = Math.min(borderRadius, Math.min(W, H) / 2);
     const cx = W / 2;
     const cy = H / 2;
-    const bezelW = Math.min(
-      Math.min(W, H) * this.BEZEL_FRACTION * 0.5,
-      R * 0.85,
-    );
+    const bezelW = Math.min(Math.min(W, H) * this.BEZEL_FRACTION * 0.5, R * 0.85);
 
     const canvas = document.createElement('canvas');
     canvas.width = W;
@@ -85,8 +80,7 @@ const GlassDistortion = {
         if (dist <= 0 || dist >= bezelW) continue;
 
         const t = dist / bezelW;
-        const slope =
-          (this.GLASS_THICKNESS * 0.5) / Math.sqrt(t + 0.001);
+        const slope = (this.GLASS_THICKNESS * 0.5) / Math.sqrt(t + 0.001);
         const sinT1 = slope / Math.sqrt(1 + slope * slope);
         const cosT1 = Math.sqrt(Math.max(0, 1 - sinT1 * sinT1));
         const sinT2 = sinT1 / this.IOR;

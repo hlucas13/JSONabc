@@ -2,10 +2,7 @@
 <html lang="en-GB" data-theme="dark" data-glass="clear">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>JSONabc – JSON Property Sorter</title>
     <link
       rel="icon"
@@ -132,27 +129,9 @@
               stroke-linecap="round"
               stroke-linejoin="round"
             >
-              <circle
-                cx="5"
-                cy="12"
-                r="1.5"
-                fill="currentColor"
-                stroke="none"
-              />
-              <circle
-                cx="12"
-                cy="12"
-                r="1.5"
-                fill="currentColor"
-                stroke="none"
-              />
-              <circle
-                cx="19"
-                cy="12"
-                r="1.5"
-                fill="currentColor"
-                stroke="none"
-              />
+              <circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none" />
             </svg>
           </span>
           <span class="dock-label">More</span>
@@ -173,9 +152,7 @@
               stroke-linejoin="round"
             >
               <rect x="9" y="9" width="13" height="13" rx="2" />
-              <path
-                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-              />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
             </svg>
           </span>
           <span class="dock-label">Copy</span>
@@ -208,11 +185,7 @@
         </button>
 
         <!-- Clear — landscape-only, danger -->
-        <button
-          class="dock-btn dock-landscape-btn dock-btn--danger"
-          id="btn-clear"
-          type="button"
-        >
+        <button class="dock-btn dock-landscape-btn dock-btn--danger" id="btn-clear" type="button">
           <span class="dock-icon">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -236,12 +209,7 @@
 
         <div class="dock-sep"></div>
 
-        <button
-          class="dock-btn has-menu"
-          id="btn-settings"
-          type="button"
-          aria-label="Settings"
-        >
+        <button class="dock-btn has-menu" id="btn-settings" type="button" aria-label="Settings">
           <span class="dock-icon">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -291,9 +259,7 @@
           </span>
           <div class="settings-row-text">
             <span class="settings-row-name">Sort</span>
-            <span class="settings-row-desc"
-              >Sort properties A–Z and array values</span
-            >
+            <span class="settings-row-desc">Sort properties A–Z and array values</span>
           </div>
         </div>
         <div class="settings-sep"></div>
@@ -317,9 +283,7 @@
           </span>
           <div class="settings-row-text">
             <span class="settings-row-name">Format</span>
-            <span class="settings-row-desc"
-              >Pretty-print without reordering</span
-            >
+            <span class="settings-row-desc">Pretty-print without reordering</span>
           </div>
         </div>
       </div>
@@ -349,11 +313,7 @@
           </svg>
           <span>Copy</span>
         </button>
-        <button
-          class="hamburger-item"
-          data-delegates="btn-history"
-          type="button"
-        >
+        <button class="hamburger-item" data-delegates="btn-history" type="button">
           <svg
             class="dock-icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -474,9 +434,7 @@
           </span>
           <div class="settings-row-text">
             <span class="settings-row-name">Dark mode</span>
-            <span class="settings-row-desc"
-              >Toggle between light and dark mode</span
-            >
+            <span class="settings-row-desc">Toggle between light and dark mode</span>
           </div>
           <button
             id="theme-toggle"
@@ -526,9 +484,7 @@
           </span>
           <div class="settings-row-text">
             <span class="settings-row-name">Frosted glass</span>
-            <span class="settings-row-desc"
-              >Toggle between clear and frosted glass</span
-            >
+            <span class="settings-row-desc">Toggle between clear and frosted glass</span>
           </div>
           <button
             id="toggle-glass"
@@ -633,17 +589,10 @@
             </button>
           </div>
           <p class="history-modal-hint">
-            Auto-saved on paste and edit. Click a version to restore, or delete
-            individual entries.
+            Auto-saved on paste and edit. Click a version to restore, or delete individual entries.
           </p>
           <div id="history-list" class="history-list"></div>
-          <button
-            id="btn-clear-history"
-            class="history-clear-btn"
-            type="button"
-          >
-            Clear all
-          </button>
+          <button id="btn-clear-history" class="history-clear-btn" type="button">Clear all</button>
         </div>
       </div>
     </div>
@@ -772,10 +721,7 @@
     </svg>
 
     <!-- ===== SVG filters for liquid toggles ===== -->
-    <svg
-      aria-hidden="true"
-      style="position: absolute; width: 0; height: 0; overflow: hidden"
-    >
+    <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden">
       <defs>
         <filter id="lt-goo" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="4" />
@@ -793,12 +739,7 @@
             values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -255 -255 -255 0 1"
             result="black-pixels"
           />
-          <feMorphology
-            in="black-pixels"
-            operator="dilate"
-            radius="0.5"
-            result="smoothed"
-          />
+          <feMorphology in="black-pixels" operator="dilate" radius="0.5" result="smoothed" />
           <feComposite in="SourceGraphic" in2="smoothed" operator="out" />
         </filter>
       </defs>

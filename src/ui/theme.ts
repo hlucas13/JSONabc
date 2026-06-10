@@ -1,6 +1,6 @@
 // ── Theme management (dark/light, frosted/clear glass) ──
 
-import { animateLiquidToggle, syncLiquidToggle } from "./liquid-toggle";
+import { animateLiquidToggle, syncLiquidToggle } from './liquid-toggle';
 
 interface ThemeElements {
   iconThemeSettings: HTMLElement;
@@ -31,7 +31,7 @@ export function applyTheme(
   animate = false,
   persist = true,
 ): void {
-  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   elements.iconThemeSettings.innerHTML = dark ? SVG_SUN : SVG_MOON;
 
   if (animate) {
@@ -41,11 +41,11 @@ export function applyTheme(
   }
 
   if (persist) {
-    localStorage.setItem("jsonabc-theme", dark ? "dark" : "light");
+    localStorage.setItem('jsonabc-theme', dark ? 'dark' : 'light');
   }
 
-  elements.inputEditor.setOption("theme", "jsonabc");
-  elements.outputEditor.setOption("theme", "jsonabc");
+  elements.inputEditor.setOption('theme', 'jsonabc');
+  elements.outputEditor.setOption('theme', 'jsonabc');
 }
 
 export function applyGlassStyle(
@@ -54,7 +54,7 @@ export function applyGlassStyle(
   animate = false,
   persist = true,
 ): void {
-  document.documentElement.dataset.glass = frosted ? "frosted" : "clear";
+  document.documentElement.dataset.glass = frosted ? 'frosted' : 'clear';
 
   if (animate) {
     animateLiquidToggle(elements.toggleGlass, frosted);
@@ -63,10 +63,10 @@ export function applyGlassStyle(
   }
 
   if (persist) {
-    localStorage.setItem("jsonabc-glass", frosted ? "frosted" : "clear");
+    localStorage.setItem('jsonabc-glass', frosted ? 'frosted' : 'clear');
   }
 }
 
 export function detectSystemTheme(): boolean {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }

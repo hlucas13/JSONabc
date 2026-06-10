@@ -7,27 +7,17 @@ export interface ToastElements {
   toastMsg: HTMLElement;
 }
 
-export type ToastType = "success" | "error" | "info";
+export type ToastType = 'success' | 'error' | 'info';
 
-export function initToast(
-  toast: HTMLElement,
-  toastMsg: HTMLElement,
-): ToastElements {
+export function initToast(toast: HTMLElement, toastMsg: HTMLElement): ToastElements {
   return { toast, toastMsg };
 }
 
-export function showToast(
-  elements: ToastElements,
-  msg: string,
-  type: ToastType,
-): void {
+export function showToast(elements: ToastElements, msg: string, type: ToastType): void {
   elements.toastMsg.textContent = msg;
-  elements.toast.className = "toast";
+  elements.toast.className = 'toast';
   elements.toast.classList.add(type);
-  elements.toast.classList.remove("hidden");
+  elements.toast.classList.remove('hidden');
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(
-    () => elements.toast.classList.add("hidden"),
-    3000,
-  );
+  toastTimer = setTimeout(() => elements.toast.classList.add('hidden'), 3000);
 }

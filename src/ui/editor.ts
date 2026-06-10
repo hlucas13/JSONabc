@@ -6,9 +6,9 @@ export function createEditor(
   placeholder: string,
 ): CodeMirror.Editor {
   return CodeMirror(el, {
-    mode: { name: "javascript", json: true },
-    theme: "jsonabc",
-    readOnly: readOnly ? "nocursor" : false,
+    mode: { name: 'javascript', json: true },
+    theme: 'jsonabc',
+    readOnly: readOnly ? 'nocursor' : false,
     placeholder,
     lineNumbers: true,
     lineWrapping: true,
@@ -19,10 +19,10 @@ export function createEditor(
     matchBrackets: true,
     autoCloseBrackets: false,
     foldGutter: true,
-    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
     extraKeys: {
-      "Ctrl-S": () => {},
-      "Cmd-S": () => {},
+      'Ctrl-S': () => {},
+      'Cmd-S': () => {},
     },
   });
 }
