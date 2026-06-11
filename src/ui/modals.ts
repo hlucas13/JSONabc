@@ -144,10 +144,10 @@ function buildHelpBody(helpBody: HTMLElement): void {
       iSort,
       'Sorting',
       `<ul class="help-list">
-        <li><strong>Sort</strong> — recursively sorts all object keys alphabetically (A–Z) and array values numerically (0–1). Available from the <strong>Actions</strong> menu or via <kbd>Ctrl+Enter</kbd> / <kbd>Cmd+Enter</kbd>.</li>
+        <li><strong>Sort</strong> — recursively sorts all object keys alphabetically (A–Z). Array element order is preserved. Available from the <strong>Actions</strong> menu or via <kbd>Ctrl+Enter</kbd> / <kbd>Cmd+Enter</kbd>.</li>
+        <li><strong>Sort arrays</strong> — recursive key sort plus array element sorting. Also in the <strong>Actions</strong> menu. Primitives (strings, numbers, booleans) are sorted naturally; objects inside arrays are sorted by their stringified representation.</li>
         <li><strong>Format</strong> — pretty-prints the JSON without reordering keys. Useful for quick formatting. Also in the <strong>Actions</strong> menu.</li>
-        <li><strong>Sort arrays</strong> — when enabled (via Settings), array element values are also sorted. Primitives (strings, numbers, booleans) are sorted naturally; objects inside arrays are sorted by their stringified representation.</li>
-        <li><strong>Trailing commas</strong> — the parser strips trailing commas before processing, so JSON with a dangling comma at any level is accepted.</li>
+        <li><strong>JSONC input</strong> — the parser accepts JSON with comments (<kbd>//</kbd> and <kbd>/* */</kbd>) and trailing commas. Comments inside the JSON structure are preserved in the output.</li>
       </ul>`,
     ),
     section(
@@ -162,7 +162,6 @@ function buildHelpBody(helpBody: HTMLElement): void {
       iSettings,
       'Settings',
       `<ul class="help-list">
-        <li><strong>Sort arrays</strong> — toggles sorting of array element values on or off.</li>
         <li><strong>Dark mode</strong> — toggles between light and dark colour schemes. Follows the system preference by default.</li>
         <li><strong>Frosted glass</strong> — switches the dock and panel glass effect between clear (subtle) and frosted (strong blur + milky tint).</li>
         <li><strong>Help &amp; Wiki</strong> — accessed from the bottom of the Settings menu. Contains detailed guidance on all features.</li>

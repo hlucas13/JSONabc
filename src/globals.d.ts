@@ -5,6 +5,15 @@ declare var CodeMirror: {
 };
 
 declare namespace CodeMirror {
+  interface ScrollInfo {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+    clientWidth: number;
+    clientHeight: number;
+  }
+
   interface Editor {
     setValue(s: string): void;
     getValue(): string;
@@ -16,6 +25,10 @@ declare namespace CodeMirror {
     getDoc(): Doc;
     focus(): void;
     setSize(w: number | string | null, h: number | string | null): void;
+    getScrollInfo(): ScrollInfo;
+    scrollTo(x: number | null, y: number): void;
+    lineAtHeight(height: number): number;
+    heightAtLine(line: number): number;
   }
   interface Doc {
     getValue(): string;

@@ -3,9 +3,9 @@
 
 import './glass-distortion';
 import { saveSnapshot } from './history-store';
-import { countLines, formatOnly as formatJson, processJson } from './json-utils';
+import { countLines } from './json-utils';
+import { formatJsonc, processJsonc } from './jsonc-processor';
 import { createEditor } from './ui/editor';
-import { animateLiquidToggle, syncLiquidToggle } from './ui/liquid-toggle';
 import { closeAllMenus, initMenus, toggleSettingsMenu } from './ui/menu';
 import {
   clearAllHistory,
@@ -31,10 +31,8 @@ const sortMenu = document.getElementById('sort-menu')!;
 const toast = document.getElementById('toast')!;
 const toastMsg = document.getElementById('toast-msg')!;
 const lineCountEl = document.getElementById('line-count')!;
-const iconSortArrays = document.getElementById('icon-sort-arrays')!;
 const toggleTheme = document.getElementById('theme-toggle') as HTMLButtonElement;
 const toggleGlass = document.getElementById('toggle-glass') as HTMLButtonElement;
-const sortArraysToggle = document.getElementById('sort-arrays-toggle') as HTMLButtonElement;
 
 // ── Initialize subsystems ──
 const toastEls = initToast(toast, toastMsg);
@@ -72,7 +70,6 @@ const themeEls = initTheme(iconThemeSettings, toggleTheme, toggleGlass, inputEdi
 
 // ── State ──
 let isDark = false;
-let sortArraysEnabled = false;
 let inputChangeTimer: ReturnType<typeof setTimeout> | null = null;
 
 // ── Editor change → auto-save snapshot ──
@@ -84,9 +81,9 @@ inputEditor.on('change', () => {
 });
 
 // ── Core actions ──
-function handleProcessJSON(): void {
+function handleProcessJSON(sortArrays: boolean): void {
   const raw = inputEditor.getValue();
-  const { result, error } = processJson(raw, sortArraysEnabled);
+  const { result, error } = processJsonc(raw, sortArrays);
 
   if (error === 'Empty input') {
     show('Paste some JSON to get started.', 'info');
@@ -109,7 +106,7 @@ function handleProcessJSON(): void {
 
 function handleFormatOnly(): void {
   const raw = inputEditor.getValue();
-  const { result, error } = formatJson(raw);
+  const { result, error } = formatJsonc(raw);
 
   if (error === 'Empty input') {
     show('Paste some JSON to format.', 'info');
@@ -139,16 +136,20 @@ function copyResult(): void {
   navigator.clipboard.writeText(val).then(
     () => show('📋 Copied!', 'success'),
     () => {
-      // Fallback for older browsers
-      const ta = document.createElement('textarea');
-      ta.value = val;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      show('📋 Copied!', 'success');
+      // Fallback for older browsers (e.g. HTTP context where Clipboard API is unavailable)
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = val;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        show('📋 Copied!', 'success');
+      } catch {
+        show('✖ Failed to copy. Try selecting the text manually.', 'error');
+      }
     },
   );
 }
@@ -178,19 +179,13 @@ toggleGlass.addEventListener('click', () => {
   applyGlassStyle(themeEls, document.documentElement.dataset.glass !== 'frosted', true);
 });
 
-// Sort arrays toggle
-sortArraysToggle.addEventListener('click', () => {
-  sortArraysEnabled = !sortArraysEnabled;
-  animateLiquidToggle(sortArraysToggle, sortArraysEnabled);
-  iconSortArrays.innerHTML =
-    sortArraysEnabled ?
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4M7 5v14"/><path d="M21 15l-4 4-4-4M17 19V5"/></svg>'
-    : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4M7 5v14"/><path d="M21 15l-4 4-4-4M17 19V5" opacity="0.3"/></svg>';
-});
+// Sort arrays toggle — removed, now in Actions menu as two separate options
 
+// Settings menu
 // Settings menu
 btnSettings.addEventListener('click', (e) => {
   e.stopPropagation();
+  closeAllMenus(menuEls);
   toggleSettingsMenu(menuEls, !settingsMenu.classList.contains('visible'));
 });
 
@@ -204,7 +199,12 @@ btnSort.addEventListener('click', (e) => {
 
 document.getElementById('sort-menu-sort')!.addEventListener('click', () => {
   closeAllMenus(menuEls);
-  handleProcessJSON();
+  handleProcessJSON(false);
+});
+
+document.getElementById('sort-menu-sort-arrays')!.addEventListener('click', () => {
+  closeAllMenus(menuEls);
+  handleProcessJSON(true);
 });
 
 document.getElementById('sort-menu-format')!.addEventListener('click', () => {
@@ -284,7 +284,7 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
     e.preventDefault();
-    handleProcessJSON();
+    handleProcessJSON(false);
   }
 });
 
@@ -323,7 +323,8 @@ function restorePrefs(): void {
   const savedGlass = localStorage.getItem('jsonabc-glass');
   applyGlassStyle(themeEls, savedGlass === 'frosted', false, false);
 
-  syncLiquidToggle(sortArraysToggle, false);
+  // Clean up removed feature
+  localStorage.removeItem('jsonabc-sync-scroll');
 }
 
 // ── Init ──

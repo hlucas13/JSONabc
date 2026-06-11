@@ -11,12 +11,11 @@ Sorts JSON object properties alphabetically and array values numerically. Design
 ## Features
 
 - **Alphabetical sorting** — recursively sorts all object keys A–Z at any depth
-- **Numerical sorting** — sorts numeric values 0–1 within arrays
-- **Array toggle** — enable/disable sorting of array element values
-- **Trailing commas** — accepts JSON with trailing commas at any nesting level
-- **Syntax highlighting** — CodeMirror 5 with a custom JSON colour theme (light + dark)
+- **Array sorting** — sorts array values 0–1; available as a separate option in the Actions menu
+- **JSONC support** — accepts JSON with comments (`//` and `/* */`) and trailing commas; comments are preserved in the output
+- **Syntax highlighting** — CodeMirror 5 with **Ayu** colour themes (Ayu Light / Ayu Dark)
 - **Format only** — pretty-prints JSON without reordering keys
-- **Actions menu** — the primary dock button opens a menu with **Sort** and **Format**; Sort is also accessible via `Ctrl+Enter` / `Cmd+Enter`
+- **Actions menu** — the primary dock button opens a menu with **Sort** (properties A–Z), **Sort arrays** (properties + array values), and **Format**; Sort is also accessible via `Ctrl+Enter` / `Cmd+Enter`
 - **Light / Dark mode** — persists preference in `localStorage`; follows system by default
 - **Clear / Frosted glass** — two glass styles togglable from the settings menu
 - **Copy to clipboard** — copies the sorted result with a single click
@@ -36,6 +35,8 @@ JSONabc/
 │   ├── main.ts                ← Application orchestrator (wires together all subsystems)
 │   ├── json-utils.ts          ← Pure JSON processing (parsing, sorting, comparison)
 │   ├── json-utils.test.ts     ← Unit tests for json-utils
+│   ├── jsonc-processor.ts     ← JSONC comment-preserving parser & serializer
+│   ├── jsonc-processor.test.ts← Unit tests for jsonc-processor
 │   ├── history-store.ts       ← localStorage persistence for paste/edit snapshots
 │   ├── glass-distortion.ts    ← Snell's-law displacement map generator
 │   ├── globals.d.ts           ← Type declarations (CodeMirror, GSAP)
@@ -54,7 +55,7 @@ JSONabc/
 ├── index.html                 ← HTML structure with Liquid Glass components
 ├── style.css                  ← Design tokens, glass system, CodeMirror theme, responsive, modals
 ├── build.js                   ← esbuild bundler (entry: src/main.ts → app.bundle.js)
-├── vitest.config.ts           ← Vitest test configuration
+├── vite.config.ts              ← Vite dev server + Vitest test configuration
 ├── eslint.config.js           ← ESLint flat config for TypeScript
 ├── .prettierrc                ← Prettier formatting rules
 ├── .editorconfig              ← Editor consistency settings
@@ -152,6 +153,7 @@ You can also trigger a deploy manually from the **Actions** tab → **Deploy to 
 
 - **TypeScript** + **esbuild** (fast, zero-config bundler)
 - **CodeMirror 5** (JSON editor with syntax highlighting, line numbers, bracket matching, folding)
+- **jsonc-parser** (comment-aware JSON scanning and parsing)
 - **GSAP** (liquid toggle animations)
 - **CSS custom properties** (design tokens with light/dark mode)
 - **SVG filters** (displacement mapping via Snell's law for glass refraction)

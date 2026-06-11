@@ -1,50 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap');
 
-/* ===== Design Tokens — Light ===== */
+/* ===== Design Tokens — Light (Ayu Light) ===== */
 :root {
   --accent: #16a34a;
   --accent-hover: #15803d;
   --accent-muted: #f0fdf4;
 
-  --bg-app: #f0f2f8;
-  --bg-surface: #ffffff;
-  --bg-surface-2: #f9fafb;
+  --bg-app: #fcfcfc;
+  --bg-surface: #ececed;
+  --bg-surface-2: #fcfcfc;
 
-  --text-primary: #111827;
-  --text-secondary: #3b4a5c;
-  --text-tertiary: #5b6370;
+  --text-primary: #5c6166;
+  --text-secondary: #8b8e92;
+  --text-tertiary: #a9acae;
 
-  --border: #e0e3e8;
-  --border-strong: #c9cdd4;
+  --border: #cfd1d2;
+  --border-strong: #dfe0e1;
 
-  --scrollbar-thumb: #c4c8d0;
+  --scrollbar-thumb: #5c61664c;
 
-  --bg-header: rgba(248, 249, 254, 0.85);
-  --text-header: #111827;
+  --bg-header: rgba(252, 252, 252, 0.88);
+  --text-header: #5c6166;
   --border-header: rgba(0, 0, 0, 0.07);
 
   --bg-btn: transparent;
-  --text-btn: #111827;
+  --text-btn: #5c6166;
 
   --bg-pane-header: transparent;
-  --text-pane-header: #8a94a2;
+  --text-pane-header: #8b8e92;
 
-  --bg-divider: #e5e7eb;
+  --bg-divider: #dfe0e1;
   --bg-divider-active: #16a34a;
 
-  --bg-editor: #ffffff;
-  --text-editor: #1d2939;
-  --bg-gutter: #f8f9fb;
-  --text-gutter: #8a94a2;
-  --bg-cursor: #1d2939;
-  --bg-selection: #dcfce7;
-  --bg-active-line: #f0fdf4;
-  --border-cm: #e5e7eb;
+  --bg-editor: #fcfcfc;
+  --text-editor: #5c6166;
+  --bg-gutter: #fcfcfc;
+  --text-gutter: #b0b3b5;
+  --bg-cursor: #5c6166;
+  --bg-selection: #3b9ee51a;
+  --bg-active-line: #ececedbf;
+  --border-cm: #dfe0e1;
 
-  --pane-header-bg: #ffffff;
+  --pane-header-bg: #fcfcfc;
 
   /* Liquid Glass dock — reflex system */
-  --glass-c-glass: #c8c8cc;
+  --glass-c-glass: #cfd1d2;
   --glass-c-light: #ffffff;
   --glass-c-dark: #000000;
   --glass-reflex-light: 1;
@@ -53,60 +53,60 @@
   --glass-btn-hover: rgba(0, 0, 0, 0.055);
   --glass-btn-active-bg: rgba(22, 163, 74, 0.14);
   --glass-sep: rgba(0, 0, 0, 0.2);
-  --glass-frozen-bg: rgba(255, 255, 255, 0.14);
+  --glass-frozen-bg: rgba(255, 255, 255, 0.5);
   --glass-blur: 4px;
   --glass-surface-bg: color-mix(in srgb, var(--glass-c-glass) 24%, transparent);
 
   /* Danger */
-  --danger: #dc2626;
-  --danger-hover: #b91c1c;
+  --danger: #ef7271;
+  --danger-hover: #d95a59;
 }
 
-/* ===== Design Tokens — Dark ===== */
+/* ===== Design Tokens — Dark (Ayu Dark) ===== */
 [data-theme='dark'] {
   --accent: #4ade80;
   --accent-hover: #86efac;
   --accent-muted: #052e16;
 
-  --bg-app: #0d1117;
-  --bg-surface: #0d1117;
-  --bg-surface-2: #161b22;
+  --bg-app: #0d1016;
+  --bg-surface: #1f2127;
+  --bg-surface-2: #0d1016;
 
-  --text-primary: #e6edf3;
-  --text-secondary: #9caab5;
-  --text-tertiary: #7a8594;
+  --text-primary: #bfbdb6;
+  --text-secondary: #8a8986;
+  --text-tertiary: #696a6a;
 
-  --border: #21262d;
-  --border-strong: #30363d;
+  --border: #3f4043;
+  --border-strong: #2d2f34;
 
-  --scrollbar-thumb: #484f58;
+  --scrollbar-thumb: #bfbdb64c;
 
-  --bg-header: rgba(13, 17, 23, 0.88);
-  --text-header: #e6edf3;
+  --bg-header: rgba(13, 16, 22, 0.88);
+  --text-header: #bfbdb6;
   --border-header: rgba(255, 255, 255, 0.06);
 
   --bg-btn: transparent;
-  --text-btn: #c9d1d9;
+  --text-btn: #bfbdb6;
 
   --bg-pane-header: transparent;
-  --text-pane-header: #586070;
+  --text-pane-header: #696a6a;
 
-  --bg-divider: #21262d;
+  --bg-divider: #2d2f34;
   --bg-divider-active: #4ade80;
 
-  --bg-editor: #0d1117;
-  --text-editor: #e6edf3;
-  --bg-gutter: #111820;
-  --text-gutter: #586070;
-  --bg-cursor: #e6edf3;
-  --bg-selection: #14532d;
-  --bg-active-line: #111820;
-  --border-cm: #21262d;
+  --bg-editor: #0d1016;
+  --text-editor: #bfbdb6;
+  --bg-gutter: #0d1016;
+  --text-gutter: #4b4c4e;
+  --bg-cursor: #bfbdb6;
+  --bg-selection: #5ac1fe1a;
+  --bg-active-line: #1f2127bf;
+  --border-cm: #2d2f34;
 
   --pane-header-bg: transparent;
 
   /* Liquid Glass dock — dark reflex system */
-  --glass-c-glass: #bbbbbc;
+  --glass-c-glass: #3f4043;
   --glass-c-light: #ffffff;
   --glass-c-dark: #000000;
   --glass-reflex-light: 0.3;
@@ -115,11 +115,11 @@
   --glass-btn-hover: rgba(255, 255, 255, 0.08);
   --glass-btn-active-bg: rgba(74, 222, 128, 0.18);
   --glass-sep: rgba(255, 255, 255, 0.1);
-  --glass-frozen-bg: rgba(255, 255, 255, 0.08);
+  --glass-frozen-bg: rgba(13, 16, 22, 0.82);
   --glass-surface-bg: color-mix(in srgb, var(--glass-c-glass) 17%, transparent);
 
-  --danger: #f87171;
-  --danger-hover: #ef4444;
+  --danger: #f07178;
+  --danger-hover: #ef7177;
 }
 
 /* ===== Glass Style — Frosted override ===== */
@@ -456,18 +456,36 @@ main {
   background: var(--bg-active-line);
 }
 
+.editor-wrap .CodeMirror-foldgutter {
+  width: 1.2em;
+}
+
 .editor-wrap .CodeMirror-foldgutter-open,
-.editor-wrap .CodeMirror-foldgutter-closed {
+.editor-wrap .CodeMirror-foldgutter-folded {
   color: var(--text-tertiary);
   cursor: pointer;
+  text-align: center;
+  width: 1.2em;
 }
 
 .editor-wrap .CodeMirror-foldgutter-open::after {
   content: '▾';
 }
 
-.editor-wrap .CodeMirror-foldgutter-closed::after {
+.editor-wrap .CodeMirror-foldgutter-folded::after {
   content: '▸';
+}
+
+/* Folded range marker inside the editor content */
+.editor-wrap .CodeMirror-foldmarker {
+  color: var(--accent);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--accent-muted);
+  border-radius: 3px;
+  padding: 0 6px;
+  margin: 0 2px;
 }
 
 /* CodeMirror placeholder */
@@ -476,60 +494,66 @@ main {
   font-style: italic;
 }
 
-/* ===== JSON Syntax Highlighting — Light ===== */
+/* ===== JSON Syntax Highlighting — Light (Ayu Light) ===== */
 .cm-s-jsonabc .cm-atom {
-  color: #0550ae;
+  color: #a37acc;
 } /* numbers, booleans, null */
 .cm-s-jsonabc .cm-string {
-  color: #0a3069;
+  color: #86b300;
 } /* strings */
 .cm-s-jsonabc .cm-property {
-  color: #166534;
+  color: #3b9ee5;
 } /* keys */
 .cm-s-jsonabc .cm-number {
-  color: #0550ae;
+  color: #a37acc;
 }
 .cm-s-jsonabc .cm-keyword {
-  color: #cf222e;
+  color: #fa8d3e;
 } /* true/false/null */
 .cm-s-jsonabc .cm-bracket {
-  color: #57606a;
+  color: #73777b;
 }
 .cm-s-jsonabc .cm-comment {
-  color: #6e7781;
+  color: #abb0b6;
   font-style: italic;
 }
 .cm-s-jsonabc .cm-error {
-  color: #cf222e;
-  background: #ffebe9;
+  color: #ef7271;
+  background: #ffe3e1;
 }
 
-/* ===== JSON Syntax Highlighting — Dark ===== */
+/* ===== JSON Syntax Highlighting — Dark (Ayu Dark) ===== */
 [data-theme='dark'] .cm-s-jsonabc .cm-atom {
-  color: #79c0ff;
+  color: #d2a6ff;
 }
 [data-theme='dark'] .cm-s-jsonabc .cm-string {
-  color: #a5d6ff;
+  color: #a9d94b;
 }
 [data-theme='dark'] .cm-s-jsonabc .cm-property {
-  color: #86efac;
+  color: #5ac1fe;
 }
 [data-theme='dark'] .cm-s-jsonabc .cm-number {
-  color: #79c0ff;
+  color: #d2a6ff;
 }
 [data-theme='dark'] .cm-s-jsonabc .cm-keyword {
-  color: #ff7b72;
+  color: #ff8f3f;
 }
 [data-theme='dark'] .cm-s-jsonabc .cm-bracket {
-  color: #8b949e;
+  color: #a6a5a0;
 }
 [data-theme='dark'] .cm-s-jsonabc .cm-comment {
-  color: #6e7681;
+  color: #5c6773;
   font-style: italic;
 }
 [data-theme='dark'] .cm-s-jsonabc .cm-error {
-  color: #ff7b72;
-  background: #3d1117;
+  color: #f07178;
+  background: #48161b;
+}
+
+/* Fold gutter: ensure markers are always visible */
+.editor-wrap .CodeMirror-foldgutter-open::after,
+.editor-wrap .CodeMirror-foldgutter-folded::after {
+  display: block;
 }
 
 /* ===== Divider ===== */
@@ -1480,6 +1504,12 @@ main {
 .editor-wrap .CodeMirror-hscrollbar::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
   border-radius: 3px;
+}
+
+/* Override CM5's hardcoded white scrollbar-filler (creates a light bar at the bottom in dark mode) */
+.editor-wrap .CodeMirror-scrollbar-filler,
+.editor-wrap .CodeMirror-gutter-filler {
+  background: var(--bg-editor) !important;
 }
 
 /* ===== History Modal ===== */

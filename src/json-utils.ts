@@ -1,12 +1,12 @@
 // ── JSON processing utilities ──
 
-export interface JsonValue {
-  [key: string]: JsonValue;
+export interface JsonObject {
+  [key: string]: JsonData;
 }
 
 export type JsonPrimitive = string | number | boolean | null;
-export type JsonArray = JsonValue[];
-export type JsonData = JsonPrimitive | JsonArray | JsonValue;
+export type JsonArray = JsonData[];
+export type JsonData = JsonPrimitive | JsonArray | JsonObject;
 
 /**
  * Removes trailing commas from JSON-like strings so they can be parsed.
@@ -112,7 +112,7 @@ export function processJson(raw: string, sortArrays: boolean): { result: string;
  * Formats raw JSON input without sorting keys.
  * @returns `{ result: string, error?: string }`
  */
-export function formatOnly(raw: string): { result: string; error?: string } {
+export function formatRawInput(raw: string): { result: string; error?: string } {
   if (!raw.trim()) {
     return { result: '', error: 'Empty input' };
   }

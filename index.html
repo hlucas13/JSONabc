@@ -56,7 +56,6 @@
       <div class="pane">
         <div class="pane-header">
           <span>Input</span>
-          <span class="pane-badge">Accepts trailing commas</span>
         </div>
         <div class="pane-body">
           <div id="input-wrap" class="editor-wrap"></div>
@@ -254,12 +253,35 @@
               stroke-linejoin="round"
             >
               <path d="M3 9l4-4 4 4M7 5v14" />
-              <path d="M21 15l-4 4-4-4M17 19V5" />
+              <path d="M21 15l-4 4-4-4M17 19V5" opacity="0.3" />
             </svg>
           </span>
           <div class="settings-row-text">
             <span class="settings-row-name">Sort</span>
-            <span class="settings-row-desc">Sort properties A–Z and array values</span>
+            <span class="settings-row-desc">Sort properties A–Z only</span>
+          </div>
+        </div>
+        <div class="settings-sep"></div>
+        <div class="settings-row" id="sort-menu-sort-arrays">
+          <span class="settings-row-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="17"
+              height="17"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l4-4 4 4M7 5v14" />
+              <path d="M21 15l-4 4-4-4M17 19V5" />
+            </svg>
+          </span>
+          <div class="settings-row-text">
+            <span class="settings-row-name">Sort arrays</span>
+            <span class="settings-row-desc">Sort properties and array values</span>
           </div>
         </div>
         <div class="settings-sep"></div>
@@ -365,55 +387,6 @@
       <div class="glass-shine"></div>
       <div class="platform-menu-content">
         <div class="platform-menu-label">Options</div>
-
-        <!-- Sort arrays toggle -->
-        <div class="settings-row">
-          <span class="settings-row-icon" id="icon-sort-arrays">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="17"
-              height="17"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M3 9l4-4 4 4M7 5v14" />
-              <path d="M21 15l-4 4-4-4M17 19V5" opacity="0.3" />
-            </svg>
-          </span>
-          <div class="settings-row-text">
-            <span class="settings-row-name">Sort arrays</span>
-            <span class="settings-row-desc">Sort values inside arrays</span>
-          </div>
-          <button
-            id="sort-arrays-toggle"
-            class="liquid-toggle"
-            role="switch"
-            aria-checked="false"
-            type="button"
-          >
-            <div class="knockout">
-              <div class="indicator indicator--masked">
-                <div class="mask"></div>
-              </div>
-            </div>
-            <div class="indicator__liquid">
-              <div class="shadow"></div>
-              <div class="wrapper">
-                <div class="liquids">
-                  <div class="liquid__shadow"></div>
-                  <div class="liquid__track"></div>
-                </div>
-              </div>
-              <div class="cover"></div>
-            </div>
-          </button>
-        </div>
-
-        <div class="settings-sep"></div>
 
         <!-- Dark mode toggle -->
         <div class="settings-row">

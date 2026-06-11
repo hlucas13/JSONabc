@@ -3,7 +3,7 @@ import {
   compareValues,
   countLines,
   formatJson,
-  formatOnly,
+  formatRawInput,
   parseJson,
   processJson,
   sortValue,
@@ -152,15 +152,15 @@ describe('processJson', () => {
   });
 });
 
-describe('formatOnly', () => {
+describe('formatRawInput', () => {
   it('formats without sorting keys', () => {
-    const { result, error } = formatOnly('{"z": 1, "a": 2}');
+    const { result, error } = formatRawInput('{"z": 1, "a": 2}');
     expect(error).toBeUndefined();
     expect(result).toBe('{\n  "z": 1,\n  "a": 2\n}');
   });
 
   it('returns error for empty input', () => {
-    const { result, error } = formatOnly('');
+    const { result, error } = formatRawInput('');
     expect(result).toBe('');
     expect(error).toBe('Empty input');
   });

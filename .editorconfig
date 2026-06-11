@@ -1,18 +1,18 @@
 root = true
 
+# ── Defaults (aligned with .prettierrc) ──
+# Prettier uses tabWidth: 2, useTabs: false, endOfLine: lf for ALL file types.
+# EditorConfig mirrors those here so editors stay in sync.
 [*]
 indent_style = space
-indent_size = 4
+indent_size = 2
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.{ts,js,mjs,cjs}]
-indent_size = 4
-
+# ── Markdown ──
+# Prettier preserves trailing whitespace in Markdown (proseWrap: preserve),
+# so EditorConfig should not strip it.
 [*.md]
 trim_trailing_whitespace = false
-
-[*.{yml,yaml,json}]
-indent_size = 2
